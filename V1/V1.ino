@@ -184,7 +184,7 @@ void loop() {
     delay(250);
     Serial.print(scale.get_units(10));
   }
-  if (scale.get_units(10) > 200 && digitalRead(PIR_INSIDE_PIN)) {
+  if (scale.get_units(10) >= 55 && digitalRead(PIR_INSIDE_PIN)) {
     //Hedgehog is in the shelter
     Serial.print("Hedgehog is in the home");
     led_status = 1;
@@ -200,8 +200,7 @@ void loop() {
     myPrintSave(time, temperature, humidity, motion_inside, motion_outside, weight, led_status);
   }
 
-
-  if (digitalRead(PIR_ENTRANCE_PIN) == true && scale.get_units(10) <= 50) {
+  if (digitalRead(PIR_ENTRANCE_PIN) == true && scale.get_units(10) <= 5) {
     //Hedgehog leaves the house
     led_status = 0;
     Serial.print("Hedgehog moves in the house");
@@ -209,9 +208,10 @@ void loop() {
     myPrintSave(time, temperature, humidity, motion_inside, motion_outside, weight, led_status);
     scale.tare();
   }
-  if (scale.get_units(10) < 300 && scale.get_units(10) > 100 && led_status == 1) {
+  if (scale.get_units(10) > 10 && scale.get_units(10) < 45 && led_status == 1) {
     //Hedgehog might have a problem
     led_status = 2;
+    set_led(led_status);
     Serial.print("Hedgehog might have a problem");
     readAllSensors();
     myPrintSave(time, temperature, humidity, motion_inside, motion_outside, weight, led_status);
@@ -224,7 +224,7 @@ void loop() {
     myPrintSave(time, temperature, humidity, motion_inside, motion_outside, weight, led_status);
   } else {
     counter += 1;
-    delay(100);
+    delay(10);
   }
 }
 
